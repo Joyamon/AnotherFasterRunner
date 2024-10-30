@@ -6,7 +6,7 @@ REGISTER_EMAIL_EXIST = {"code": "0101", "success": False, "msg": "邮箱已被�
 
 SYSTEM_ERROR = {"code": "9999", "success": False, "msg": "System Error"}
 
-REGISTER_SUCCESS = {"code": "0001", "success": True, "msg": "register success"}
+REGISTER_SUCCESS = {"code": "0001", "success": True, "msg": "注册成功"}
 
 LOGIN_FAILED = {"code": "0103", "success": False, "msg": "用户名或密码错误"}
 
@@ -14,4 +14,4 @@ USER_NOT_EXISTS = {"code": "0104", "success": False, "msg": "该用户未注册"
 
 USER_BLOCKED = {"code": "0105", "success": False, "msg": "用户被禁用"}
 
-LOGIN_SUCCESS = {"code": "0001", "success": True, "msg": "login success"}
+LOGIN_SUCCESS = {"code": "0001", "success": True, "msg": "登录成功"}

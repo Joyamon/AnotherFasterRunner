@@ -44,12 +44,21 @@
                                     </div>
                                     <div class="form-submit">
                                         <button type="submit" class="btn btn-primary" id="submitBtn"
-                                                 @click.prevent="submitForm">立即登录
+                                                @click.prevent="submitForm">立即登录
                                         </button>
                                     </div>
                                 </div>
                                 <div class="form-foot">
-                                    <span>注册功能已经关闭了，创建用户请联系管理员</span>
+<!--                                    <span>注册功能已经关闭了，创建用户请联系管理员</span>-->
+                                    <span
+                                      >没有账户，<router-link to="/fastrunner/register"
+                                        >立即注册</router-link
+                                      >
+                                      &#12288;&#12288;&#12288; &#12288;&#12288;&#12288;
+                                      &#12288;&#12288;&#12288;&#12288;
+                                      &#12288;&#12288;&#12288;&#12288;
+                                      <!-- <router-link to="/forgetpassword" class="forgot-password">找回密码</router-link> -->
+                                    </span>
                                 </div>
 
                             </div>

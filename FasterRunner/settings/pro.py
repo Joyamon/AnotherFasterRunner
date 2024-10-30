@@ -47,10 +47,10 @@ if find_dotenv():
 DATABASES = {
     "default": {
         "ENGINE": "dj_db_conn_pool.backends.mysql",
-        "HOST": MYSQL_HOST,
-        "NAME": DB_NAME,  # 新建数据库名
-        "USER": DB_USER,  # 数据库登录名
-        "PASSWORD": DB_PASSWORD,  # 数据库登录密码
+        "HOST": "127.0.0.1",
+        "NAME": "fast",  # 新建数据库名
+        "USER": "root",  # 数据库登录名
+        "PASSWORD": "123456",  # 数据库登录密码
         "OPTIONS": {"charset": "utf8mb4"},
         'POOL_OPTIONS': {
             'POOL_SIZE': 20,
@@ -63,9 +63,9 @@ DATABASES = {
     }
 }
 
-broker_url = f"amqp://{MQ_USER}:{MQ_PASSWORD}@{MQ_HOST}:5672//"
+broker_url = ""
 
-BASE_REPORT_URL = f"http://{SERVER_IP}:8000/api/fastrunner/reports"
+BASE_REPORT_URL = ""
 
 # 用来直接url访问
 # STATIC_URL = '/static/'

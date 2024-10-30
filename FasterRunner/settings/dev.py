@@ -28,7 +28,7 @@ DATABASES = {
         # 'NAME': 'fast_mb4',  # 新建数据库名
         "HOST": "127.0.0.1",
         "USER": "root",  # 数据库登录名
-        "PASSWORD": "root",  # 数据库登录密码
+        "PASSWORD": "123456",  # 数据库登录密码
         'OPTIONS': {
             'charset': 'utf8mb4',
         },

@@ -28,7 +28,7 @@ export default new Router({
             path: '/fastrunner/register',
             name: 'Register',
             component: Register,
-            redirect: Login,
+            redirect: "",
             meta: {
                 title: '用户注册'
             }

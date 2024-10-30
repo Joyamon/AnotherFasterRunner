@@ -65,7 +65,7 @@
                                     </div>
                                 </div>
                                 <div class="form-foot">
-                                    <span>已有账户，<router-link to="/fastrunner/login">立即登陆</router-link></span>
+                                    <span>已有账户，<router-link to="/fastrunner/login">立即登录</router-link></span>
                                 </div>
 
                             </div>

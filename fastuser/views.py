@@ -11,10 +11,8 @@ from rest_framework_jwt.settings import api_settings
 
 from fastuser import models, serializers
 from fastuser.common import response
+from fastuser.models import UserInfo
 from fastuser.serializers import UserLoginSerializer
-
-# 获取用户模型
-User = get_user_model()
 
 logger = logging.getLogger(__name__)
 
@@ -39,15 +37,19 @@ class RegisterView(APIView):
         except KeyError:
             return Response(response.KEY_MISS)
 
-        if models.User.objects.filter(username=username).first():
+        if models.UserInfo.objects.filter(username=username).first():
             return Response(response.REGISTER_USERNAME_EXIST)
 
-        if models.User.objects.filter(email=email).first():
+        if models.UserInfo.objects.filter(email=email).first():
             return Response(response.REGISTER_EMAIL_EXIST)
 
-        request.data["password"] = make_password(password)
+        # request.data["password"] = make_password(password)
+        # 由于尝试直接修改 request.data 引起的。request.data 是一个 QueryDict 对象，它默认是不可变的。
+        # 要解决这个问题，你可以在修改 request.data 之前创建一个可变的副本
+        mutable_data = request.data.copy()
+        mutable_data["password"] = make_password(password)
 
-        serializer = serializers.UserInfoSerializer(data=request.data)
+        serializer = serializers.UserInfoSerializer(data=mutable_data)
 
         if serializer.is_valid():
             serializer.save()
@@ -56,11 +58,11 @@ class RegisterView(APIView):
             return Response(response.SYSTEM_ERROR)
 
 
-def ldap_auth(username: str, password: str) -> Optional[User]:
+def ldap_auth(username: str, password: str):
     ldap_user = authenticate(username=username, password=password)
     if ldap_user and ldap_user.backend == "django_auth_ldap.backend.LDAPBackend":
         logger.info(f"LDAP authentication successful for {username}")
-        local_user: User = User.objects.filter(username=username).first()
+        local_user = UserInfo.objects.filter(username=username).first()
         if local_user:
             local_user.password = make_password(password)
             local_user.save(update_fields=["password"])
@@ -70,13 +72,10 @@ def ldap_auth(username: str, password: str) -> Optional[User]:
     return None
 
 
-def local_auth(username: str, password: str) -> Optional[User]:
-    local_user = User.objects.filter(username=username).first()
+def local_auth(username: str, password: str):
+    local_user = UserInfo.objects.filter(username=username).first()
     if not local_user:
         logger.warning(f"Local user does not exist: {username}")
-        return None
-    if local_user.is_active == 0:
-        logger.warning(f"Local user is blocked: {username}")
         return None
     if not check_password(password, local_user.password):
         logger.warning(f"Local authentication failed: {username}")
@@ -84,15 +83,13 @@ def local_auth(username: str, password: str) -> Optional[User]:
     return local_user
 
 
-def generate_token_and_respond(local_user: User):
+def generate_token_and_respond(local_user):
     jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
     jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
     payload = jwt_payload_handler(local_user)
     token = jwt_encode_handler(payload)
     response.LOGIN_SUCCESS["token"] = token
     response.LOGIN_SUCCESS["user"] = local_user.username
-    response.LOGIN_SUCCESS["is_superuser"] = local_user.is_superuser
-    response.LOGIN_SUCCESS["show_hosts"] = local_user.show_hosts
     return Response(response.LOGIN_SUCCESS)
 
 
@@ -109,8 +106,8 @@ class LoginView(APIView):
         serializer = UserLoginSerializer(data=request.data)
 
         if serializer.is_valid():
-            username: str = serializer.validated_data["username"]
-            password: str = serializer.validated_data["password"]
+            username = serializer.validated_data["username"]
+            password = serializer.validated_data["password"]
             masked_password = f"{password[0]}{'*' * (len(password) - 2)}{password[-1]}"
             logger.info(f"Received login request for {username=}, password={masked_password}")
 
@@ -137,6 +134,6 @@ class LoginView(APIView):
 
 class UserView(APIView):
     def get(self, request):
-        users = User.objects.filter(is_active=1)
+        users = UserInfo.objects.filter()
         ser = serializers.UserModelSerializer(instance=users, many=True)
         return Response(ser.data)
